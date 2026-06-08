@@ -1,15 +1,27 @@
+
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from flask import session
+
 
 app = Flask(__name__)
 app.secret_key = "studyhub_secret_key"
 
 import os
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+database_url = os.environ.get("DATABASE_URL")
+
+# IMPORTANT FIX FOR LOCAL RUN
+if not database_url:
+    database_url = "sqlite:///studyhub.db"
+
+# Fix for Render PostgreSQL
+else:
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
@@ -117,20 +129,31 @@ def student_login():
     return render_template("student_login.html")
 
 
+
 @app.route("/student_register", methods=["POST"])
 def student_register():
     name = request.form["name"]
     email = request.form["email"]
     password = request.form["password"]
 
-    if User.query.filter_by(email=email).first():
-        return "Email already exists"
+    # CHECK IF EMAIL EXISTS
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return "Email already registered. Please login."
 
-    user = User(name=name, email=email, password=password, role="student")
-    db.session.add(user)
+    hashed_password = generate_password_hash(password)
+
+    new_user = User(
+        name=name,
+        email=email,
+        password=hashed_password,
+        role="student"
+    )
+
+    db.session.add(new_user)
     db.session.commit()
 
-    return redirect("/student")
+    return redirect("/student_login")
 
 
 @app.route("/student_login", methods=["POST"])
@@ -138,9 +161,9 @@ def student_login_post():
     email = request.form["email"]
     password = request.form["password"]
 
-    user = User.query.filter_by(email=email, password=password, role="student").first()
+    user = User.query.filter_by(email=email, role="student").first()
 
-    if user:
+    if user and check_password_hash(user.password, password):
         session["user_id"] = user.id
         session["role"]=user.role
         return redirect("/student_dashboard")
@@ -158,42 +181,58 @@ def student_dashboard():
 def teacher_login():
     return render_template("teacher_login.html")
 
-
 @app.route("/teacher_register", methods=["POST"])
 def teacher_register():
     name = request.form["name"]
     email = request.form["email"]
     password = request.form["password"]
-    secret = request.form["secret"]
+    secret_code = request.form["secret_code"]
 
+    # ---------------- CHECK IF EMAIL ALREADY EXISTS ----------------
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return "Email already registered. Please login."
+
+    # ---------------- GET SECRET CODE FROM DB ----------------
     setting = Settings.query.first()
 
-    if not setting or secret != setting.teacher_secret:
-        role = "student"
-    else:
-        role = "teacher"
+    if not setting:
+        return "Teacher system not configured"
 
-    user = User(name=name, email=email, password=password, role=role)
-    db.session.add(user)
+    # ---------------- VERIFY SECRET CODE ----------------
+    if secret_code != setting.teacher_secret:
+        return "Invalid Teacher Secret Code"
+
+    # ---------------- HASH PASSWORD ----------------
+    hashed_password = generate_password_hash(password)
+
+    # ---------------- CREATE TEACHER ----------------
+    new_user = User(
+        name=name,
+        email=email,
+        password=hashed_password,
+        role="teacher"
+    )
+
+    db.session.add(new_user)
     db.session.commit()
 
-    return redirect("/teacher")
-
+    return redirect("/teacher_login")
 
 @app.route("/teacher_login", methods=["POST"])
 def teacher_login_post():
     email = request.form["email"]
     password = request.form["password"]
 
-    user = User.query.filter_by(email=email, password=password, role="teacher").first()
+    user = User.query.filter_by(email=email,role="teacher").first()
 
-    if user:
+    if user and check_password_hash(user.password, password):
         session["user_id"] = user.id
         session["role"]=user.role
         return redirect("/teacher_dashboard")
 
     return "Invalid Teacher Login"
-
+ 
 
 @app.route("/teacher_dashboard")
 def teacher_dashboard():
@@ -244,48 +283,23 @@ def change_secret():
     new_secret = request.form["secret"]
 
     setting = Settings.query.first()
+
+    if not setting:
+        return"Settings not found"
     setting.teacher_secret = new_secret
     db.session.commit()
 
     return "Secret Updated"
 
-@app.route("/save_timer", methods=["POST"])
-def save_timer():
 
-    subject = request.form["subject"]
-    minutes = request.form["minutes"]
 
-    user = User.query.get(session["user_id"])
-    today = str(datetime.now().date())
-
-    # STREAK LOGIC
-    if user.last_study_date == today:
-        pass
-    elif user.last_study_date is None:
-        user.streak = 1
-    else:
-        user.streak += 1
-
-    user.last_study_date = today
-
-    session_data = StudySession(
-        user_id=user.id,
-        subject=subject,
-        minutes=int(minutes),
-        date=today
-    )
-
-    db.session.add(session_data)
-
-    add_xp(user.id, 10)
-
-    db.session.commit()
-
-    return "Saved + XP + Streak updated"
 
 
 @app.route("/send_message", methods=["POST"])
 def send_message():
+
+    if "user_id" not in session:
+        return redirect("/student")
 
     message = request.form["message"]
 
@@ -319,6 +333,9 @@ def get_messages():
 @app.route("/submit_quiz", methods=["POST"])
 def submit_quiz():
 
+    if "user_id" not in session:
+        return redirect("/student")
+
     score = int(request.form["score"])
     quiz_id = request.form["quiz_id"]
 
@@ -330,15 +347,26 @@ def submit_quiz():
 
     db.session.add(new_score)
 
-    # XP reward
     add_xp(session["user_id"], score * 5)
 
     db.session.commit()
 
     return "Quiz submitted + XP added"
 
-with app.app_context():
-    db.create_all()
+@app.route("/admin/set_teacher_code", methods=["POST"])
+def set_teacher_code():
+    new_code = request.form["code"]
+
+    setting = Settings.query.first()
+
+    if not setting:
+        setting = Settings(teacher_secret_code=new_code)
+        db.session.add(setting)
+    else:
+        setting.teacher_secret_code = new_code
+
+    db.session.commit()
+    return "Teacher code updated"
 
 
 # ---------------- CREATE DB ----------------
