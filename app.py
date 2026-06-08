@@ -11,9 +11,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-with app.app_context():
-    db.create_all()
-
 
 # ---------------- USERS ----------------
 class User(db.Model):
@@ -337,6 +334,9 @@ def submit_quiz():
     db.session.commit()
 
     return "Quiz submitted + XP added"
+
+with app.app_context():
+    db.create_all()
 
 
 # ---------------- CREATE DB ----------------
