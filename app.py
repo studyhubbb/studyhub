@@ -6,7 +6,9 @@ from flask import session
 app = Flask(__name__)
 app.secret_key = "studyhub_secret_key"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///studyhub.db'
+import os
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
