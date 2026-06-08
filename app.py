@@ -25,6 +25,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+with app.app_context():
+    db.create_all()
 
 # ---------------- USERS ----------------
 class User(db.Model):
@@ -363,17 +365,17 @@ def set_teacher_code():
         setting = Settings(teacher_secret_code=new_code)
         db.session.add(setting)
     else:
-        setting.teacher_secret_code = new_code
+        setting.teacher_secret = new_code
 
     db.session.commit()
     return "Teacher code updated"
 
 
-# ---------------- CREATE DB ----------------
 if __name__ == "__main__":
     with app.app_context():
-        db.create_all()
+        db.create_all()   # 👈 THIS CREATES ALL TABLES
 
+        # create default settings if not exist
         if not Settings.query.first():
             db.session.add(Settings(teacher_secret="SCHOOL2026"))
             db.session.commit()
