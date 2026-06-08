@@ -370,6 +370,18 @@ def set_teacher_code():
     db.session.commit()
     return "Teacher code updated"
 
+@app.route("/create_db")
+def create_db():
+    with app.app_context():
+        db.create_all()
+    return "Database Created Successfully"
+
+@app.route("/init-db")
+def init_db():
+    with app.app_context():
+        db.create_all()
+    return "Database Created"
+
 
 if __name__ == "__main__":
     with app.app_context():
