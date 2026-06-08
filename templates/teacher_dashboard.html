@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teacher Dashboard - StudyHub</title>
+</head>
+<body>
+
+    <h1>Teacher Dashboard 👨‍🏫</h1>
+
+    <h2>Welcome Teacher</h2>
+
+    <hr>
+
+    <!-- STUDENTS -->
+    <h3>Manage Students</h3>
+
+    <p>View all students in admin panel</p>
+
+    <a href="/admin">
+        <button>Open Admin Panel</button>
+    </a>
+
+    <hr>
+
+    <!-- QUIZ -->
+    <h3>Create Quiz</h3>
+
+    <form action="/create_quiz" method="POST">
+
+        <input type="text" name="title" placeholder="Quiz Title" required>
+        <br><br>
+
+        <input type="number" name="xp_reward" placeholder="XP Reward" required>
+        <br><br>
+
+        <button type="submit">Create Quiz</button>
+
+    </form>
+
+    <hr>
+
+    <!-- NOTES UPLOAD -->
+    <h3>Upload Notes</h3>
+
+    <form action="/upload_note" method="POST">
+
+        <input type="text" name="filename" placeholder="Note Name" required>
+        <br><br>
+
+        <button type="submit">Upload Note</button>
+
+    </form>
+
+    <hr>
+
+    <!-- XP CONTROL -->
+    <h3>Give XP to Student</h3>
+
+    <form action="/give_xp" method="POST">
+
+        <input type="email" name="email" placeholder="Student Email" required>
+        <br><br>
+
+        <input type="number" name="xp" placeholder="XP Points" required>
+        <br><br>
+
+        <button type="submit">Add XP</button>
+
+    </form>
+
+    <hr>
+
+    <a href="/teacher">
+        <button>Logout</button>
+    </a>
+
+</body>
+</html>

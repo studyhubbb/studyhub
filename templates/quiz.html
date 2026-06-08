@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz System - StudyHub</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+        }
+
+        .container {
+            width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .question {
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 8px;
+            margin-top: 10px;
+        }
+
+        .option {
+            display: block;
+            margin: 5px 0;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📘 Quiz System</h1>
+
+    <hr>
+
+    <!-- TEACHER CREATE QUIZ -->
+    <h3>Create Quiz (Teacher)</h3>
+
+    <form action="/create_quiz" method="POST">
+
+        <input type="text" name="title" placeholder="Quiz Title" required>
+        <br><br>
+
+        <input type="hidden" name="score" id="scoreInput">
+        <p id="result"></p>
+
+        <input type="number" name="xp_reward" placeholder="XP Reward" required>
+        <br><br>
+
+        <button type="submit">Create Quiz</button>
+
+    </form>
+
+    <hr>
+
+    <!-- STUDENT QUIZ AREA -->
+    <h3>Attempt Quiz</h3>
+
+    <div class="question">
+
+        <p>Q1: What is 2 + 2?</p>
+
+        <label class="option">
+            <input type="radio" name="q1"> 3
+        </label>
+
+        <label class="option">
+            <input type="radio" name="q1"> 4
+        </label>
+
+        <label class="option">
+            <input type="radio" name="q1"> 5
+        </label>
+
+    </div>
+
+    <form action="/submit_quiz" method="POST">
+
+    <input type="hidden" name="quiz_id" value="1">
+    <input type="hidden" name="score" id="scoreInput">
+
+    <button type="submit">Submit Quiz</button>
+
+    </form>
+
+    <p id="result"></p>
+
+</div>
+
+<script>
+
+function submitQuiz() {
+
+    let options = document.getElementsByName("q1");
+    let selected = "";
+
+    // Get selected answer
+    for (let i = 0; i < options.length; i++) {
+        if (options[i].checked) {
+            selected = options[i].parentElement.innerText.trim();
+        }
+    }
+
+    // Correct answer (you can change later)
+    let correctAnswer = "4";
+
+    let score = 0;
+
+    if (selected === correctAnswer) {
+        score = 10;   // XP for correct answer
+        document.getElementById("result").innerText = "Correct! +10 XP";
+    } else {
+        score = 0;
+        document.getElementById("result").innerText = "Wrong answer!";
+    }
+
+    // Send score to Flask backend
+    document.getElementById("scoreInput").value = score;
+
+    return score;
+}
+
+
+</script>
+
+</body>
+</html>

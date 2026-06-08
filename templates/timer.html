@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Study Timer - StudyHub</title>
+</head>
+
+<body>
+
+    <h1>⏱ Study Timer</h1>
+
+    <hr>
+
+    <!-- SUBJECT SELECT -->
+    <h3>Select Subject</h3>
+
+    <select id="subject">
+        <option>Maths</option>
+        <option>Physics</option>
+        <option>Chemistry</option>
+        <option>Biology</option>
+        <option>English</option>
+        <option>Computer Science</option>
+    </select>
+
+    <hr>
+
+    <!-- TIMER DISPLAY -->
+    <h2 id="time">00:00:00</h2>
+
+    <button onclick="startTimer()">Start</button>
+    <button onclick="stopTimer()">Stop</button>
+
+    <hr>
+
+    <p id="status"></p>
+
+    <script>
+
+        let seconds = 0;
+        let interval = null;
+
+        function formatTime(s) {
+
+            let hrs = Math.floor(s / 3600);
+            let mins = Math.floor((s % 3600) / 60);
+            let secs = s % 60;
+
+            return (
+                String(hrs).padStart(2, '0') + ":" +
+                String(mins).padStart(2, '0') + ":" +
+                String(secs).padStart(2, '0')
+            );
+        }
+
+        function startTimer() {
+
+            if (interval) return;
+
+            interval = setInterval(() => {
+
+                seconds++;
+
+                document.getElementById("time").innerText =
+                    formatTime(seconds);
+
+            }, 1000);
+
+            document.getElementById("status").innerText =
+                "Studying started... 📚";
+        }
+
+        function stopTimer() {
+
+    clearInterval(interval);
+    interval = null;
+
+    let subject = document.getElementById("subject").value;
+
+    fetch("/save_timer", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "subject=" + subject + "&minutes=" + Math.floor(seconds / 60)
+    });
+
+    document.getElementById("status").innerText =
+        "Saved to database ✔";
+}
+
+    </script>
+
+</body>
+</html>

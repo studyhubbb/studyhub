@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Class Chat - StudyHub</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .chat-box {
+            width: 400px;
+            margin: auto;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .messages {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .msg {
+            background: #e0f7ff;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        input {
+            width: 80%;
+            padding: 8px;
+        }
+
+        button {
+            padding: 8px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1 style="text-align:center;">💬 Class Chat</h1>
+
+    <div class="chat-box">
+
+        <!-- MESSAGES AREA -->
+        <div class="messages" id="messages">
+
+            <div class="msg">Welcome to StudyHub Chat 👋</div>
+
+        </div>
+
+        <br>
+
+        <!-- INPUT BOX -->
+        <input type="text" id="messageInput" placeholder="Type message...">
+
+        <button onclick="sendMessage()">Send</button>
+
+    </div>
+
+<script>
+
+function sendMessage() {
+
+    let msg = document.getElementById("messageInput").value;
+
+    if (msg === "") return;
+
+    fetch("/send_message", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "message=" + msg
+    }).then(() => {
+        loadMessages();
+    });
+
+    document.getElementById("messageInput").value = "";
+}
+
+function loadMessages() {
+
+    fetch("/get_messages")
+    .then(res => res.json())
+    .then(data => {
+
+        let box = document.getElementById("messages");
+        box.innerHTML = "";
+
+        data.messages.forEach(m => {
+
+            let div = document.createElement("div");
+            div.classList.add("msg");
+            div.innerText = m.message;
+
+            box.appendChild(div);
+        });
+    });
+}
+
+// auto refresh chat
+setInterval(loadMessages, 2000);
+
+loadMessages();
+
+</script>
+   
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Goals - StudyHub</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container {
+            width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            margin-top: 50px;
+            border-radius: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: green;
+            color: white;
+            border: none;
+        }
+
+        .goal {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e6ffe6;
+            border-radius: 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🎯 Daily Study Goals</h1>
+
+    <hr>
+
+    <!-- SET GOAL -->
+    <h3>Set Your Goal</h3>
+
+    <input type="number" id="hours" placeholder="Enter study hours (e.g. 3)">
+
+    <button onclick="setGoal()">Set Goal</button>
+
+    <hr>
+
+    <!-- DISPLAY GOAL -->
+    <h3>Your Goal</h3>
+
+    <div id="goalBox" class="goal">
+        No goal set yet
+    </div>
+
+</div>
+
+<script>
+
+function setGoal() {
+
+    let hours = document.getElementById("hours").value;
+
+    if (hours === "") {
+        alert("Please enter hours");
+        return;
+    }
+
+    document.getElementById("goalBox").innerText =
+        "Today's Study Goal: " + hours + " hours";
+
+}
+
+</script>
+
+</body>
+</html>

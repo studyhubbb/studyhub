@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaderboard - StudyHub</title>
+</head>
+<body>
+
+    <h1>🏆 Class Leaderboard</h1>
+
+    <hr>
+
+    {% for user in users %}
+
+        <div style="margin-bottom:10px;">
+
+            <h3>
+                {{ loop.index }}.
+                {{ user.name }}
+            </h3>
+
+            <p>
+                XP: {{ user.xp }}
+            </p>
+
+            <p>Level: {{ get_level(user.xp) }}</p>
+
+            {% if user.xp >= 500 %}
+                🥇 Elite Student
+            {% elif user.xp >= 200 %}
+                🥈 Good Progress
+            {% else %}
+                🥉 Beginner
+            {% endif %}
+
+            <hr>
+
+        </div>
+
+    {% endfor %}
+
+    <br>
+
+    <a href="/student">
+        <button>Back to Dashboard</button>
+    </a>
+
+</body>
+</html>
