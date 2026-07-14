@@ -1,0 +1,71 @@
+<!DOCTYPE html><html>
+<head>
+    <title>Create Note - StudyHub</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body><div class="nav"><div>
+    <strong>👨‍🏫 StudyHub Teacher</strong>
+</div>
+
+<div>
+    <a href="/teacher_dashboard">Dashboard</a>
+    <a href="/notes">Notes</a>
+    <a href="/logout">Logout</a>
+</div>
+
+</div><div class="container"><div class="card">
+
+    <h1>📝 Create Study Note</h1>
+
+    <form method="POST" action="/create_note">
+
+        <label>
+            Note Title
+        </label>
+
+        <br><br>
+
+        <input
+            type="text"
+            name="title"
+            placeholder="Enter note title"
+            required
+            style="width:100%;padding:10px;"
+        >
+
+        <br><br>
+
+        <label>
+            Note Content
+        </label>
+
+        <br><br>
+
+        <textarea
+            name="content"
+            rows="12"
+            placeholder="Write your note here..."
+            required
+            style="width:100%;padding:10px;"
+        ></textarea>
+
+        <br><br>
+
+        <button type="submit">
+            🚀 Publish Note
+        </button>
+
+    </form>
+
+</div>
+
+<br>
+
+<a href="/teacher_dashboard">
+    <button>
+        ⬅ Back to Dashboard
+    </button>
+</a>
+
+</div></body>
+</html>

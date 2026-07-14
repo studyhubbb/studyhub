@@ -1,4 +1,6 @@
 Flask
 Flask-SQLAlchemy
-gunicorn 
+gunicorn
+Werkzeug
+firebase-admin
 psycopg2-binary

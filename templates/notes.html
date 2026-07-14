@@ -1,49 +1,68 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
-    <title>Notes - StudyHub</title>
+    <title>Study Notes - StudyHub</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
+<body><div class="nav"><div>
+    <strong>📚 StudyHub Notes</strong>
+</div>
 
-    <h1>📚 Class Notes</h1>
+<div>
+    <a href="/student_dashboard">Dashboard</a>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/logout">Logout</a>
+</div>
 
-    <hr>
+</div><div class="container"><h1>📝 Study Notes</h1>
 
-    <!-- UPLOAD SECTION -->
-    <h3>Upload Note</h3>
+<p>
+    Notes uploaded by teachers for students.
+</p>
 
-    <form action="/upload_note" method="POST">
+{% if notes %}
 
-        <input type="text" name="title" placeholder="Note Title" required>
-        <br><br>
+    {% for note in notes %}
 
-        <input type="text" name="filename" placeholder="File Name (for now)" required>
-        <br><br>
+    <div class="card">
 
-        <button type="submit">Upload Note</button>
+        <h2>{{ note.title }}</h2>
 
-    </form>
+        <p>
+            <strong>Teacher:</strong>
+            {{ note.teacher_name }}
+        </p>
 
-    <hr>
+        <hr>
 
-    <!-- NOTES LIST -->
-    <h3>Available Notes</h3>
-
-    <p>(Backend connection will show real notes here later)</p>
-
-    <div>
-
-        <p>📄 Maths Chapter 1</p>
-        <p>📄 Physics Laws</p>
-        <p>📄 Chemistry Basics</p>
+        <p style="white-space: pre-wrap;">
+            {{ note.content }}
+        </p>
 
     </div>
 
-    <hr>
+    <br>
 
-    <a href="/student_dashboard">
-        <button>Back to Dashboard</button>
-    </a>
+    {% endfor %}
 
-</body>
+{% else %}
+
+    <div class="card">
+
+        <h2>No Notes Available</h2>
+
+        <p>
+            Teachers have not uploaded any notes yet.
+        </p>
+
+    </div>
+
+{% endif %}
+
+<br>
+
+<a href="/student_dashboard">
+    <button>⬅ Back to Dashboard</button>
+</a>
+
+</div></body>
 </html>

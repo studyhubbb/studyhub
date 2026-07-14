@@ -1,0 +1,93 @@
+<!DOCTYPE html><html>
+<head>
+    <title>Analytics - StudyHub</title><link rel="stylesheet" href="/static/style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body><div class="nav"><div>
+    <strong>📊 Study Analytics</strong>
+</div>
+
+<div>
+    <a href="/student_dashboard">Dashboard</a>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/logout">Logout</a>
+</div>
+
+</div><div class="container"><h1>📈 Your Study Progress</h1>
+
+<div class="card">
+
+    <h2>Daily Study Time</h2>
+
+    <canvas id="studyChart"></canvas>
+
+</div>
+
+<br>
+
+<div class="card">
+
+    <h2>XP Growth</h2>
+
+    <canvas id="xpChart"></canvas>
+
+</div>
+
+</div><script>
+
+// DATA FROM FLASK
+let dates = JSON.parse('{{ dates | tojson | safe }}');
+let minutes = JSON.parse('{{ minutes | tojson | safe }}');
+// ---------------- STUDY CHART ----------------
+
+new Chart(
+    document.getElementById("studyChart"),
+    {
+        type: "line",
+        data: {
+            labels: dates,
+            datasets: [{
+                label: "Study Minutes",
+                data: minutes,
+                borderColor: "#4a6cf7",
+                tension: 0.3,
+                fill: false
+            }]
+        }
+    }
+);
+
+// ---------------- XP CHART (SIMPLIFIED) ----------------
+
+let xpData = [];
+
+let total = 0;
+
+for (let i = 0; i < minutes.length; i++) {
+
+    total += minutes[i];
+
+    xpData.push(total);
+}
+
+new Chart(
+    document.getElementById("xpChart"),
+    {
+        type: "line",
+        data: {
+            labels: dates,
+            datasets: [{
+                label: "XP Growth",
+                data: xpData,
+                borderColor: "#00c853",
+                tension: 0.3,
+                fill: false
+            }]
+        }
+    }
+);
+
+</script></body>
+</html>

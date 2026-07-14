@@ -2,49 +2,40 @@
 <html>
 <head>
     <title>Student Login - StudyHub</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
+<div class="nav">
+    <div>StudyHub 📚</div>
+    <div>
+        <a href="/student">Student</a>
+        <a href="/teacher">Teacher</a>
+    </div>
+</div>
+
+<div class="container">
+
     <h1>Student Login & Register</h1>
 
-    <!-- REGISTER -->
     <h2>Register</h2>
-
     <form action="/student_register" method="POST">
-
-        <input type="text" name="name" placeholder="Name" required>
-        <br><br>
-
-        <input type="email" name="email" placeholder="Email" required>
-        <br><br>
-
-        <input type="password" name="password" placeholder="Password" required>
-        <br><br>
-
+        <input type="text" name="name" placeholder="Name" required><br><br>
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
         <button type="submit">Register</button>
-
     </form>
 
     <hr>
 
-    <!-- LOGIN -->
     <h2>Login</h2>
-
     <form action="/student_login" method="POST">
-
-        <input type="email" name="email" placeholder="Email" required>
-        <br><br>
-
-        <input type="password" name="password" placeholder="Password" required>
-        <br><br>
-
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
         <button type="submit">Login</button>
-
     </form>
 
-    <hr>
-
-    <a href="/teacher">Go to Teacher Login</a>
+</div>
 
 </body>
 </html>

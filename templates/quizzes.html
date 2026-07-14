@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quizzes - StudyHub</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="nav">
+    <div><strong>StudyHub 📚</strong></div>
+    <div>
+        <a href="/student_dashboard">Dashboard</a>
+        <a href="/leaderboard">Leaderboard</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <h1>📚 Available Quizzes</h1>
+
+    {% for q in quizzes %}
+
+    <div class="card">
+
+        <h2>{{ q.title }}</h2>
+
+        <p>Created by: {{ q.created_by }}</p>
+
+        <a href="/attempt_quiz/{{ q.id }}">
+            <button>Start Quiz</button>
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

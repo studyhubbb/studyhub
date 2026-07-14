@@ -2,62 +2,41 @@
 <html>
 <head>
     <title>Teacher Login - StudyHub</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
+<div class="nav">
+    <div>StudyHub 📚</div>
+    <div>
+        <a href="/student">Student</a>
+        <a href="/teacher">Teacher</a>
+    </div>
+</div>
+
+<div class="container">
+
     <h1>Teacher Portal 👨‍🏫</h1>
 
-    <!-- TEACHER REGISTER -->
     <h2>Teacher Register</h2>
-
     <form action="/teacher_register" method="POST">
-
-        <input type="text" name="name" placeholder="Name" required>
-        <br><br>
-
-        <input type="email" name="email" placeholder="Email" required>
-        <br><br>
-
-        <input type="password" name="password" placeholder="Password" required>
-        <br><br>
-
-        <input type="text" name="secret" placeholder="Teacher Secret Code" required>
-        <br><br>
-
-        <button type="submit">Register as Teacher</button>
-
+        <input type="text" name="name" placeholder="Name" required><br><br>
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
+        <input type="text" name="secret_code" placeholder="Teacher Secret Code" required><br><br>
+        <button type="submit">Register</button>
     </form>
 
     <hr>
 
-    <!-- TEACHER LOGIN -->
     <h2>Teacher Login</h2>
-
     <form action="/teacher_login" method="POST">
-
-        <input type="email" name="email" placeholder="Email" required>
-        <br><br>
-
-        <input type="password" name="password" placeholder="Password" required>
-        <br><br>
-
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
         <button type="submit">Login</button>
-
     </form>
-    <form action="/teacher_register" method="POST">
-    <input name="name" placeholder="Name">
-    <input name="email" placeholder="Email">
-    <input name="password" type="password" placeholder="Password">
 
-    <!-- THIS IS IMPORTANT -->
-    <input name="secret_code" placeholder="Teacher Secret Code">
-
-    <button type="submit">Register</button>
-</form>
-
-    <hr>
-
-    <a href="/student">Go to Student Login</a>
+</div>
 
 </body>
 </html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html><html>
+<head>
+    <title>Study PDFs - StudyHub</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body><div class="nav"><div>
+    <strong>📄 StudyHub PDFs</strong>
+</div>
+
+<div>
+    <a href="/student_dashboard">Dashboard</a>
+    <a href="/notes">Notes</a>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/logout">Logout</a>
+</div>
+
+</div><div class="container"><h1>📚 Study Material Library</h1>
+
+<p>
+    PDFs uploaded by teachers.
+</p>
+
+{% if pdfs %}
+
+    {% for pdf in pdfs %}
+
+    <div class="card">
+
+        <h2>{{ pdf.title }}</h2>
+
+        <p>
+            Uploaded By:
+            <strong>{{ pdf.uploaded_by }}</strong>
+        </p>
+
+        <p>
+            File:
+            {{ pdf.filename }}
+        </p>
+
+       <a href="/download_pdf/{{ pdf.filename }}" target="_blank">
+      <button>Open PDF</button>
+      </a>
+
+    </div>
+
+    <br>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="card">
+
+        <h2>No PDFs Available</h2>
+
+        <p>
+            Teachers haven't uploaded any study material yet.
+        </p>
+
+    </div>
+
+{% endif %}
+
+<br>
+
+<a href="/student_dashboard">
+    <button>
+        ⬅ Back to Dashboard
+    </button>
+</a>
+
+</div></body>
+</html>

@@ -1,80 +1,288 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
-    <title>Student Dashboard - StudyHub</title>
+    <title>StudyHub Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
-
-    <h1>Welcome to StudyHub 🎓</h1>
-
-    <h2>Student Dashboard</h2>
-
-    <!-- STUDY TIMER -->
+<body><div class="nav">
     <div>
-        <h3>Study Timer</h3>
-        <a href="/timer">
-            <button>Open Timer</button>
-        </a>
+        <strong>📚 StudyHub</strong>
+    </div><div>
+    <a href="/student_dashboard">Home</a>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/logout">Logout</a>
+</div>
+
+</div><div class="container"><h1>Welcome {{ user.name }} 👋</h1>
+
+<div class="card">
+    <h2>🚀 StudyHub Productivity Hub</h2>
+
+    <p>
+        Keep studying daily, maintain streaks,
+        complete quizzes and climb the leaderboard.
+    </p>
+</div>
+
+<div class="dashboard-grid">
+
+    <div class="card">
+
+        <h3>🏆 XP</h3>
+
+        <h1>{{ xp }}</h1>
+
+        <progress
+            value="{{ xp % 100 }}"
+            max="100"
+            style="width:100%;height:20px;">
+        </progress>
+
+        <p>Level Progress</p>
+
     </div>
 
-    <hr>
+    <div class="card">
 
-    <!-- LEADERBOARD -->
-    <div>
-        <h3>Leaderboard</h3>
+        <h3>⭐ Level</h3>
+
+        <h1>{{ level }}</h1>
+
+    </div>
+
+    <div class="card">
+
+        <h3>🏅 Rank</h3>
+
+        {% if rank == 1 %}
+            <h1>🥇 #1</h1>
+        {% elif rank == 2 %}
+            <h1>🥈 #2</h1>
+        {% elif rank == 3 %}
+            <h1>🥉 #3</h1>
+        {% else %}
+            <h1>#{{ rank }}</h1>
+        {% endif %}
+
+    </div>
+
+    <div class="card">
+
+        <h3>🔥 Streak</h3>
+
+        <h1 class="streak-flame">
+            {{ streak }}
+        </h1>
+
+    </div>
+
+</div>
+
+<br>
+
+<div class="dashboard-grid">
+
+    <div class="card">
+
+        <h2>🧠 Quizzes</h2>
+
+        <p>Test your knowledge</p>
+
+        <a href="/quizzes">
+            <button>Open Quizzes</button>
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <h2>📊 Analytics</h2>
+
+        <p>Study performance graphs</p>
+
+        <a href="/analytics">
+            <button>View Analytics</button>
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <h2>🏅 Leaderboard</h2>
+
+        <p>Check your ranking</p>
+
         <a href="/leaderboard">
             <button>View Leaderboard</button>
         </a>
+
     </div>
 
-    <hr>
+</div>
 
-    <!-- NOTES -->
-    <div>
-        <h3>Notes</h3>
+<br>
+
+<div class="card">
+
+    <h2>🎯 Daily Goal</h2>
+
+    <p>
+        {{ today }} / {{ goal }} Minutes
+    </p>
+
+    <progress
+        value="{{ today }}"
+        max="{{ goal }}"
+        style="width:100%;height:25px;">
+    </progress>
+
+</div>
+
+<br>
+
+<div class="card">
+
+    <h2>⏱ Study Timer</h2>
+
+    <h1 id="timer">00:00:00</h1>
+
+    <button onclick="startTimer()">Start</button>
+
+    <button onclick="pauseTimer()">Pause</button>
+
+    <button onclick="stopTimer()">Stop</button>
+
+</div>
+
+<br>
+
+<div class="dashboard-grid">
+
+    <div class="card">
+
+        <h2>📚 Notes</h2>
+
+        <p>Teacher Notes</p>
+
         <a href="/notes">
             <button>Open Notes</button>
         </a>
+
     </div>
 
-    <hr>
+    <div class="card">
 
-    <!-- CHAT -->
-    <div>
-        <h3>Class Chat</h3>
-        <a href="/chat">
-            <button>Open Chat</button>
+        <h2>📄 PDFs</h2>
+
+        <p>Study Material</p>
+
+        <a href="/pdfs">
+            <button>Open PDFs</button>
         </a>
+
     </div>
 
-    <hr>
+</div>
 
-    <!-- QUIZ -->
-    <div>
-        <h3>Quizzes</h3>
-        <a href="/quiz">
-            <button>Open Quiz</button>
-        </a>
+<br>
+
+<div class="dashboard-grid">
+
+    <div class="card">
+
+        <h3>📈 Total Study</h3>
+
+        <h1>{{ total }}</h1>
+
+        <p>Minutes</p>
+
     </div>
 
-    <hr>
+    <div class="card">
 
-    <!-- GOALS -->
-    <div>
-        <h3>Daily Goals</h3>
-        <a href="/goals">
-            <button>Set Goals</button>
-        </a>
+        <h3>🎯 Goal Progress</h3>
+
+        <h1>{{ today }}</h1>
+
+        <p>Today's Minutes</p>
+
     </div>
 
-    <hr>
+    <div class="card">
 
-    <!-- LOGOUT (simple reset for now) -->
-    <div>
-        <a href="/student">
-            <button>Logout</button>
-        </a>
+        <h3>🔥 Current Streak</h3>
+
+        <h1>{{ streak }}</h1>
+
+        <p>Days</p>
+
     </div>
 
-</body>
+</div>
+
+</div><script>
+
+let seconds = 0;
+let timerInterval;
+
+function startTimer() {
+
+    timerInterval = setInterval(function() {
+
+        seconds++;
+
+        let hrs = String(
+            Math.floor(seconds / 3600)
+        ).padStart(2,"0");
+
+        let mins = String(
+            Math.floor((seconds % 3600) / 60)
+        ).padStart(2,"0");
+
+        let secs = String(
+            seconds % 60
+        ).padStart(2,"0");
+
+        document.getElementById("timer").innerHTML =
+            hrs + ":" + mins + ":" + secs;
+
+    },1000);
+}
+
+function pauseTimer() {
+
+    clearInterval(timerInterval);
+
+}
+
+function stopTimer() {
+
+    clearInterval(timerInterval);
+
+    let minutes =
+        Math.floor(seconds / 60);
+
+    fetch("/save_study_time", {
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":
+            "application/x-www-form-urlencoded"
+        },
+
+        body:"minutes=" + minutes
+
+    })
+    .then(response => response.text())
+    .then(data => {
+
+        alert("Study session saved!");
+
+        location.reload();
+
+    });
+
+}
+
+</script></body>
 </html>
