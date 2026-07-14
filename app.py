@@ -7,14 +7,27 @@ import os
 import firebase_admin
 from firebase_admin import credentials,firestore
 
+import json
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-cred = credentials.Certificate(
-    os.path.join(BASE_DIR, "firebase-key.json")
-)
+if os.path.exists(os.path.join(BASE_DIR, "firebase-key.json")):
+
+    cred = credentials.Certificate(
+        os.path.join(BASE_DIR, "firebase-key.json")
+    )
+
+else:
+
+    firebase_json = os.environ.get("FIREBASE_KEY")
+
+    cred = credentials.Certificate(
+        json.loads(firebase_json)
+    )
 
 firebase_admin.initialize_app(cred)
-db_firestore=firestore.client()
+
+db_firestore = firestore.client()
 
 
 app = Flask(__name__)
